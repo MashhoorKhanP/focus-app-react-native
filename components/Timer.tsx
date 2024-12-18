@@ -17,7 +17,13 @@ const PATTERN = [
   1 * ONE_SECOND_IN_MS,
 ];
 
-const Timer = ({ focusSubject }: any) => {
+type TimerProps = {
+  focusSubject: string;
+  clearSubject: () => void;
+  onTimerEnd: () => void;
+};
+
+const Timer = ({ focusSubject, clearSubject }: TimerProps) => {
   const [isStarted, setIsStarted] = useState(false);
   const [progress, setProgress] = useState(1);
   const [minutes, setMinutes] = useState(0.1);
@@ -31,6 +37,14 @@ const Timer = ({ focusSubject }: any) => {
     setProgress(roundedProgress);
   };
 
+  const onEnd = (reset: () => void) => {
+    Vibration.vibrate(PATTERN);
+    setIsStarted(false);
+    setProgress(1);
+    setMinutes(0.1);
+    reset();
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.countdown}>
@@ -38,9 +52,7 @@ const Timer = ({ focusSubject }: any) => {
           minutes={minutes}
           isPaused={!isStarted}
           onProgress={handleProgress} // Pass the clamped progress handler
-          onEnd={() => {
-            Vibration.vibrate(PATTERN);
-          }}
+          onEnd={onEnd} // Pass the end handler
         />
         <View style={{ paddingTop: spacing.xxl }}>
           <Text style={styles.title}>Focusing on</Text>
@@ -63,9 +75,14 @@ const Timer = ({ focusSubject }: any) => {
           title={isStarted ? "Pause" : "Start"}
         />
       </View>
+      <View style={styles.clearSubjectWrapper}>
+        <RoundedButton size={50} title="-" onPress={clearSubject} />
+      </View>
     </View>
   );
 };
+
+// 04 28
 
 const styles = StyleSheet.create({
   container: {
@@ -77,7 +94,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   timingWrapper: {
-    flex:0.1,
+    flex: 0.1,
     flexDirection: "row",
     paddingTop: spacing.xl,
   },
@@ -87,6 +104,11 @@ const styles = StyleSheet.create({
     padding: spacing.md,
     justifyContent: "center",
     alignItems: "center",
+  },
+  clearSubjectWrapper: {
+    flexDirection: "row",
+    justifyContent: "center",
+    
   },
   title: {
     color: colors.white,

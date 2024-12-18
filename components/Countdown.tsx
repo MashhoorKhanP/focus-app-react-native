@@ -16,18 +16,21 @@ export const Countdown = ({
   const interval = useRef<NodeJS.Timer | any>(null);
 
   const [millis, setMillis] = useState<number>(minutesToMillis(minutes));
-
+  
+  const reset = () => setMillis(minutesToMillis(minutes));
+  
   const countDown = () => {
     setMillis((time) => {
       if (time === 0) {
         if (interval.current) clearInterval(interval.current);
-        onEnd && onEnd(); // Call onEnd if provided
+        onEnd && onEnd(reset); // Call onEnd if provided
         return time;
       }
       const timeLeft = time - 1000;
       return timeLeft;
     });
   };
+
 
   useEffect(() => {
     const newMillis = minutesToMillis(minutes);
