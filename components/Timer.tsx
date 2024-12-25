@@ -6,6 +6,7 @@ import { spacing } from "@/utils/sizes";
 import { colors } from "@/utils/colors";
 import { ProgressBar } from "react-native-paper";
 import Timing from "./Timing";
+import {useKeepAwake} from "expo-keep-awake";
 
 const ONE_SECOND_IN_MS = 1000;
 
@@ -23,7 +24,8 @@ type TimerProps = {
   onTimerEnd: () => void;
 };
 
-const Timer = ({ focusSubject, clearSubject }: TimerProps) => {
+const Timer = ({ focusSubject, clearSubject,onTimerEnd }: TimerProps) => {
+  useKeepAwake();
   const [isStarted, setIsStarted] = useState(false);
   const [progress, setProgress] = useState(1);
   const [minutes, setMinutes] = useState(0.1);
@@ -43,6 +45,7 @@ const Timer = ({ focusSubject, clearSubject }: TimerProps) => {
     setProgress(1);
     setMinutes(0.1);
     reset();
+    onTimerEnd(focusSubject);
   };
 
   return (
@@ -81,8 +84,6 @@ const Timer = ({ focusSubject, clearSubject }: TimerProps) => {
     </View>
   );
 };
-
-// 04 28
 
 const styles = StyleSheet.create({
   container: {

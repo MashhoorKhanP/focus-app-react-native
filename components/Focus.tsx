@@ -25,7 +25,7 @@ const Focus = ({addSubject}: any) => {
 
 const styles: any = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 0.1,
   },
   text: {
     color: "white",

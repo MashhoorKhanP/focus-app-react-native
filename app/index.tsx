@@ -1,8 +1,8 @@
+import React, { useState } from "react";
 import Focus from "@/components/Focus";
+import FocusHistory from "@/components/FocusHistory";
 import Timer from "@/components/Timer";
 import { colors } from "@/utils/colors";
-import { Link } from "expo-router";
-import { useState } from "react";
 import {
   View,
   Text,
@@ -13,13 +13,23 @@ import {
 } from "react-native";
 
 export default function HomeScreen() {
-  const [currentSubject, setCurrentSubject] = useState<any>("test");
+  const [currentSubject, setCurrentSubject] = useState<any>("");
+  const [history, setHistory] = useState<string[]>([]);
   return (
     <SafeAreaView style={styles.container}>
       {!currentSubject ? (
-        <Focus addSubject={setCurrentSubject} />
+        <>
+          <Focus addSubject={setCurrentSubject} />
+          <FocusHistory history={history} />
+        </>
       ) : (
-        <Timer focusSubject={currentSubject} onTimerEnd={() => {}} clearSubject={() => setCurrentSubject("")} />
+        <Timer
+          focusSubject={currentSubject}
+          onTimerEnd={(subject:string) => {
+            setHistory([...history, subject]);
+          }}
+          clearSubject={() => setCurrentSubject("")}
+        />
       )}
     </SafeAreaView>
   );
